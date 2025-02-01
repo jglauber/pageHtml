@@ -11,20 +11,18 @@ function makeTable(dom) {
               let children = td.children;
               let div = children[0]
               if (children[0] !== undefined) {
-                // console.log(div.title.trim())
                 return div.title.trim();
               } else {
                 return td.textContent.trim();
               }     
             }
-            // console.log(td.textContent.trim())
             return td.textContent.trim();      
             });
         });
 
-    let table = Array.prototype.concat(headers,body)
+    let table = Array.prototype.concat(headers,body);
     
-    return table
+    return table;
 }
 
 module.exports = makeTable;
