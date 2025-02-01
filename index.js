@@ -1,1 +1,1 @@
-const PageHTML = require('./src/htmlScraper')
+const PageHTML = require('./src/htmlScraper');
