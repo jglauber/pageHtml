@@ -8,7 +8,7 @@ A tool to extract data from HTML. Dependencies include Puppeteer with Rebrowser 
 
 ## Example Usage
 
-```
+```javascript
 const PageHTML = require('./src/htmlScraper')
 
 // Create the PageHTML object.
