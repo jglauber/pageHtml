@@ -1,0 +1,38 @@
+{
+  "name": "htmlscraper",
+  "version": "0.0.1",
+  "description": "A tool to grab and process a website's html.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "type": "commonjs",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jglauber/htmlScraper.git"
+  },
+  "keywords": [
+    "html",
+    "scraper",
+    "webscrape",
+    "cloudflare"
+  ],
+  "author": "John Glauber",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jglauber/htmlScraper/issues"
+  },
+  "homepage": "https://github.com/jglauber/htmlScraper#readme",
+  "dependencies": {
+    "jsdom": "^26.0.0",
+    "rebrowser-puppeteer": "^23.10.3",
+    "rebrowser-puppeteer-core": "^23.10.3",
+    "user-agents": "^1.1.431"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

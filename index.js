@@ -1,0 +1,1 @@
+const PageHTML = require('./src/htmlScraper')
