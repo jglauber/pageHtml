@@ -5,6 +5,7 @@ const UserAgent = require('user-agents');
 const puppeteer = require('rebrowser-puppeteer');
 const makeTable = require('../utils/makeTable');
 const getLinks = require('../utils/getLinks');
+const getElement = require('../utils/getElement');
 
 /**
  * 
@@ -17,6 +18,8 @@ class PageHTML {
         this.screenWidth = this.userAgentObject.data.screenWidth;
         this.screenHeight = this.userAgentObject.data.screenHeight;
         this.platform = this.userAgentObject.data.platform;
+        this.page = null;
+        this.browser = null;
     };
 
     /**
@@ -25,37 +28,45 @@ class PageHTML {
     * @returns {object} The document object model (dom).
     */
     async get(url) {
-        const browser = await puppeteer.launch({headless: false, defaultViewport: {width: this.screenWidth, height: this.screenHeight},
-            args: ['--disable-blink-features=AutomationControlled'],
-            ignoreDefaultArgs: ['--enable-automation']
-        });
-        const page = await browser.newPage();
-        await page.evaluateOnNewDocument(() => {
-            // delete navigator.__proto__.webdriver;
-            // customize the navigator.platform value
-            Object.defineProperty(navigator, "webdriver", {
-                get: () => false,
+        if (this.browser === null || this.page === null) {
+            const browser = await puppeteer.launch({headless: false, defaultViewport: {width: this.screenWidth, height: this.screenHeight},
+                args: ['--disable-blink-features=AutomationControlled'],
+                ignoreDefaultArgs: ['--enable-automation']
             });
-            Object.defineProperty(navigator, "platform", {
-                value: this.platform,
+            const page = await browser.newPage();
+            await page.evaluateOnNewDocument(() => {
+                // delete navigator.__proto__.webdriver;
+                // customize the navigator.platform value
+                Object.defineProperty(navigator, "webdriver", {
+                    get: () => false,
+                });
+                Object.defineProperty(navigator, "platform", {
+                    value: this.platform,
+                });
             });
-        });
-        await page.setUserAgent(this.userAgent);
+            await page.setUserAgent(this.userAgent);
+            this.browser = browser;
+            this.page = page;
+        }
+
         if (typeof(url) === "string") {
-            await page.goto(url);
-            var response = await page.content()
+            await this.page.goto(url);
+            var response = await this.page.content()
             var dom = new JSDOM(response);
             this.dom.push(dom);     
         } else if (Array.isArray(url)) {
             for (let site of url) {
-                await page.goto(site);
-                var response = await page.content()
+                await this.page.goto(site);
+                var response = await this.page.content()
                 var dom = new JSDOM(response);
                 this.dom.push(dom);
                 await new Promise(resolve => setTimeout(resolve,Math.floor(Math.random() * 2000 + 2000)));
             }
+        } else if (url === undefined) {
+            var response = await this.page.content()
+            var dom = new JSDOM(response);
+            this.dom.push(dom);
         }
-        // browser.close()
         return this.dom;
     }
 
@@ -79,8 +90,20 @@ class PageHTML {
         }
         return links;
     }
-};
 
-// 
+    content(elementString) {
+        var content = [];
+        for (let dom of this.dom) {
+            content.push(getElement(dom,elementString));
+        }
+        return content; 
+    }
+
+    close() {
+        this.browser.close();
+        this.page = null;
+        this.browser = null;
+    }
+}; 
 
 module.exports = PageHTML;
