@@ -28,22 +28,23 @@ async function rebrowserMainTest() {
         'runtimeEnableLeak': 0,
         'viewport': 0,
     }
-    if (tables[1].filter(str => str.includes('window.dummyFn() was called'))) {
+    if ((tables[1].filter(str => str.includes('window.dummyFn() was called'))).length > 0) {
         results.dummyFn = 1;
     } else {
         results.dummyFn = 0;
     }
-    if (tables[2].filter(str => str.includes('Error stack'))) {
+    if ((tables[2].filter(str => str.includes('Error stack'))).length > 0) {
         results.sourceUrlLeak = 1;
     } else {
         results.sourceUrlLeak = 0;
     }
-    if (tables[3].filter(str => str.includes("test wasn't triggered"))) {
+    if ((tables[3].filter(str => str.includes("test wasn't triggered"))).length > 0) {
         results.mainWorldExecution = 1;
     } else {
         results.mainWorldExecution = 0;
     }
-    if (tables[4].filter(str => str.includes('No Leak'))) {
+    console.log(tables[4]);
+    if ((tables[4].filter(str => str.includes('No leak'))).length > 0) {
         results.runtimeEnableLeak = 1;
     } else {
         results.runtimeEnableLeak = 0;
@@ -71,8 +72,9 @@ async function rebrowserMainTest() {
 
 async function checkUserAgent() {
     let pHtml = new PageHTML();
-    await pHtml.get('https://dnschecker.org/user-agent-info.php');
-    let userAgentDetected = pHtml.content('p.user_agent_info')[0];
+    await pHtml.get('https://www.whatsmyua.info/');
+    let userAgentDetected = pHtml.content('li#rawUa')[0];
+    userAgentDetected = userAgentDetected.replace('rawUa: ', '')
     pHtml.close();
     if (userAgentDetected === pHtml.userAgent) {
         return true;  
@@ -93,17 +95,35 @@ async function checkLinks() {
     }
 }
 
+async function tableTest() {
+    let pHtml = new PageHTML();
+    await pHtml.get('https://en.wikipedia.org/wiki/List_of_Formula_One_Grand_Prix_winners','https://en.wikipedia.org/');
+    pHtml.close();
+    let tables = pHtml.tables()[0];
+    if ((tables[0].filter(str => String(str).includes('Driver'))).length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 test('User Agent Matches Expected Value', async () => {
     const result = await checkUserAgent();
     expect(result).toBe(true);
-  });
+  }, 30000);
 
 test('Perform Rebrowser Patch Checks', async () => {
     const result = await rebrowserMainTest();
     expect(result).toBe(true);
-  });
+  }, 30000);
 
 test('Confirm Links Retrieval', async () => {
     const result = await checkLinks();
     expect(result).toBe(true);
-})
+}, 30000)
+
+test('Tables Retrieved Successfully', async () => {
+    const result = await tableTest();
+    expect(result).toBe(true);
+}, 30000)
