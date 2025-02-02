@@ -24,44 +24,26 @@ class PageHTML {
 
     /**
     * A function that retrieves data from a webpage.
-    * @param {string|string[]} url 
+    * @param {string} url 
     * @returns {object} The document object model (dom).
     */
-    async get(url) {
+    async get(url, referer) {
         if (this.browser === null || this.page === null) {
             const browser = await puppeteer.launch({headless: false, defaultViewport: {width: this.screenWidth, height: this.screenHeight},
+                ignoreDefaultArgs: ['--enable-automation'],
                 args: ['--disable-blink-features=AutomationControlled'],
-                ignoreDefaultArgs: ['--enable-automation']
             });
             const page = await browser.newPage();
-            await page.evaluateOnNewDocument(() => {
-                // delete navigator.__proto__.webdriver;
-                // customize the navigator.platform value
-                Object.defineProperty(navigator, "webdriver", {
-                    get: () => false,
-                });
-                Object.defineProperty(navigator, "platform", {
-                    value: this.platform,
-                });
-            });
             await page.setUserAgent(this.userAgent);
             this.browser = browser;
             this.page = page;
         }
 
         if (typeof(url) === "string") {
-            await this.page.goto(url);
+            await this.page.goto(url, {referer: referer});
             var response = await this.page.content()
             var dom = new JSDOM(response);
             this.dom.push(dom);     
-        } else if (Array.isArray(url)) {
-            for (let site of url) {
-                await this.page.goto(site);
-                var response = await this.page.content()
-                var dom = new JSDOM(response);
-                this.dom.push(dom);
-                await new Promise(resolve => setTimeout(resolve,Math.floor(Math.random() * 2000 + 2000)));
-            }
         } else if (url === undefined) {
             var response = await this.page.content()
             var dom = new JSDOM(response);
