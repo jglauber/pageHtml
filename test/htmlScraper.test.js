@@ -20,7 +20,7 @@ async function rebrowserMainTest() {
     await pHtml.get('https://bot-detector.rebrowser.net/');
     await rebrowserPageTests(pHtml.page);
     await pHtml.get();
-    let tables = pHtml.tables()[1];
+    let tables = pHtml.tables()[1][0];
     let results = {
         'dummyFn': 0,
         'sourceUrlLeak': 0,
@@ -43,7 +43,6 @@ async function rebrowserMainTest() {
     } else {
         results.mainWorldExecution = 0;
     }
-    console.log(tables[4]);
     if ((tables[4].filter(str => str.includes('No leak'))).length > 0) {
         results.runtimeEnableLeak = 1;
     } else {
@@ -88,7 +87,7 @@ async function checkLinks() {
     await pHtml.get('https://www.example.com/');
     pHtml.close();
     let links = pHtml.links()[0];
-    if (links[0] === 'https://www.iana.org/domains/example') {
+    if (links[0].href === 'https://www.iana.org/domains/example') {
         return true;
     } else {
         return false;
@@ -99,14 +98,13 @@ async function tableTest() {
     let pHtml = new PageHTML();
     await pHtml.get('https://en.wikipedia.org/wiki/List_of_Formula_One_Grand_Prix_winners','https://en.wikipedia.org/');
     pHtml.close();
-    let tables = pHtml.tables()[0];
-    if ((tables[0].filter(str => String(str).includes('Driver'))).length > 0) {
+    let tables = pHtml.tables()[0][2];
+    if ((tables[1].filter(str => String(str).includes('Lewis'))).length > 0) {
         return true;
     } else {
         return false;
     }
 }
-
 
 test('User Agent Matches Expected Value', async () => {
     const result = await checkUserAgent();
