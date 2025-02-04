@@ -18,7 +18,11 @@
     "html",
     "scraper",
     "webscrape",
-    "cloudflare"
+    "cloudflare",
+    "webscraping",
+    "data",
+    "tables",
+    "links"
   ],
   "author": "John Glauber",
   "license": "MIT",
