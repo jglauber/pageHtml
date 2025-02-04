@@ -73,7 +73,8 @@ async function checkUserAgent() {
     let pHtml = new PageHTML();
     await pHtml.get('https://www.whatsmyua.info/');
     let userAgentDetected = pHtml.content('li#rawUa')[0];
-    userAgentDetected = userAgentDetected.replace('rawUa: ', '')
+    userAgentDetected = userAgentDetected[0].elementText.replace('rawUa: ', '')
+    console.log(userAgentDetected);
     pHtml.close();
     if (userAgentDetected === pHtml.userAgent) {
         return true;  
