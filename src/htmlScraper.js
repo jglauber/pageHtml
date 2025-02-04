@@ -5,7 +5,7 @@ const UserAgent = require('user-agents');
 const puppeteer = require('rebrowser-puppeteer');
 const makeTable = require('../utils/makeTable');
 const getLinks = require('../utils/getLinks');
-const getElement = require('../utils/getElement');
+const getElementText = require('../utils/getElement');
 
 /**
  * 
@@ -22,12 +22,7 @@ class PageHTML {
         this.browser = null;
     };
 
-    /**
-    * A function that retrieves data from a webpage.
-    * @param {string} url 
-    * @returns {object} The document object model (dom).
-    */
-    async get(url, referer) {
+    async #createPage() {
         if (this.browser === null || this.page === null) {
             const browser = await puppeteer.launch({headless: false, defaultViewport: {width: this.screenWidth, height: this.screenHeight},
                 ignoreDefaultArgs: ['--enable-automation'],
@@ -37,15 +32,27 @@ class PageHTML {
             await page.setUserAgent(this.userAgent);
             this.browser = browser;
             this.page = page;
+            return {browser: browser, page: page};
         }
+        return {browser: this.browser, page: this.page};
+    }
+
+    /**
+    * A function that retrieves data from a webpage.
+    * @param {string} url 
+    * @returns {jsdom.JSDOM} The document object model (dom).
+    */
+    async get(url, referer) {
+        const pageObject = await this.#createPage();
+        const page = pageObject.page;
 
         if (typeof(url) === "string") {
-            await this.page.goto(url, {referer: referer});
-            var response = await this.page.content()
+            await page.goto(url, {referer: referer});
+            var response = await page.content()
             var dom = new JSDOM(response);
             this.dom.push(dom);     
         } else if (url === undefined) {
-            var response = await this.page.content()
+            var response = await page.content()
             var dom = new JSDOM(response);
             this.dom.push(dom);
         }
@@ -76,7 +83,7 @@ class PageHTML {
     content(elementString) {
         var content = [];
         for (let dom of this.dom) {
-            content.push(getElement(dom,elementString));
+            content.push(getElementText(dom,elementString));
         }
         return content; 
     }
