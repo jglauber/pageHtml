@@ -31,7 +31,7 @@ async function rebrowserMainTest() {
     await pHtml.get('https://bot-detector.rebrowser.net/');
     await rebrowserPageTests(pHtml.page);
     await pHtml.get();
-    let tables = pHtml.tables()[1][0];
+    let tables = pHtml.tables(1)[0];
     let results = {
         'dummyFn': 0,
         'sourceUrlLeak': 0,
@@ -87,8 +87,8 @@ async function rebrowserMainTest() {
 async function checkUserAgent() {
     let pHtml = new PageHTML();
     await pHtml.get('https://www.whatsmyua.info/');
-    let userAgentDetected = pHtml.content('li#rawUa')[0];
-    userAgentDetected = userAgentDetected[0].elementText.replace('rawUa: ', '')
+    let userAgentDetected = pHtml.content('li#rawUa',0)[0];
+    userAgentDetected = userAgentDetected.elementText.replace('rawUa: ', '')
     pHtml.close();
     if (userAgentDetected === pHtml.userAgent) {
         return true;  
@@ -105,8 +105,8 @@ async function checkLinks() {
     let pHtml = new PageHTML();
     await pHtml.get('https://www.example.com/');
     pHtml.close();
-    let links = pHtml.links()[0];
-    if (links[0].href === 'https://www.iana.org/domains/example') {
+    let links = pHtml.links(0)[0];
+    if (links.href === 'https://www.iana.org/domains/example') {
         return true;
     } else {
         return false;
@@ -121,7 +121,7 @@ async function tableTest() {
     let pHtml = new PageHTML();
     await pHtml.get('https://en.wikipedia.org/wiki/List_of_Formula_One_Grand_Prix_winners','https://en.wikipedia.org/');
     pHtml.close();
-    let tables = pHtml.tables()[0][2];
+    let tables = pHtml.tables(0)[2];
     if ((tables[1].filter(str => String(str).includes('Lewis'))).length > 0) {
         return true;
     } else {
