@@ -1,5 +1,5 @@
 {
-  "name": "htmlscraper",
+  "name": "pagehtml",
   "version": "0.0.1",
   "description": "A tool to grab and process a website's html.",
   "main": "index.js",

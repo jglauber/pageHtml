@@ -1,10 +1,10 @@
-# Welcome to htmlScraper
+# Welcome to pageHtml
 
 A tool to extract data from HTML. Dependencies include Puppeteer with Rebrowser patches, User-Agents, and JSDOM.
 
 ## Installation
 
-`npm i htmlscraper`
+`npm i pagehtml`
 
 ## Example Usage
 
@@ -13,7 +13,7 @@ Here is a basic example that demonstrates loading two different webpages. Each p
 ### Basic Example:
 
 ```javascript
-const PageHTML = require('htmlscraper');
+const PageHTML = require('pagehtml');
 
 // Create the PageHTML object.
 let pHtml = new PageHTML();

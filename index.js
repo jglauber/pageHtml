@@ -1,6 +1,6 @@
 /**
- * htmlScraper module
- * @module htmlScraper
+ * htmlPage module
+ * @module htmlPage
  */
 
 const PageHTML = require('./src/htmlScraper');
