@@ -46,26 +46,113 @@
         <article><h1>Welcome to htmlScraper</h1>
 <p>A tool to extract data from HTML. Dependencies include Puppeteer with Rebrowser patches, User-Agents, and JSDOM.</p>
 <h2>Installation</h2>
-<p><code>npm i htmlScraper</code></p>
+<p><code>npm i htmlscraper</code></p>
 <h2>Example Usage</h2>
-<pre class="prettyprint source lang-javascript"><code>const PageHTML = require('./src/htmlScraper')
+<p>Here is a basic example that demonstrates loading two different webpages. Each page's JSDOM instance is stored in an array property of the PageHTML class. We can then access these DOMs later with methods such as tables, links, and content.</p>
+<h3>Basic Example:</h3>
+<pre class="prettyprint source lang-javascript"><code>const PageHTML = require('htmlscraper');
 
 // Create the PageHTML object.
 let pHtml = new PageHTML();
 
-// Get the webpage content.
-await pHtml.get(['http://www.example.com/'])
+(async () => {
+    // Get the webpage content for two distinct URLs and store in the dom property of the PageHTML class.
+    await pHtml.get('https://www.example.com');
+    await pHtml.get('https://en.wikipedia.org/wiki/List_of_Formula_One_Grand_Prix_winners');
 
-// Grab any html tables on the page.
-let tables = pHtml.tables()
+    // close the browser and page.
+    pHtml.close();
 
-// Grab all href links on the page.
-let links = pHtml.links()
+    // Grab all href links from the example.com page.
+    // This will return an array of link objects as shown below.
+    // [
+    //   {
+    //     href: 'https://www.iana.org/domains/example',
+    //     nodeName: 'a',
+    //     outerHTML: '&lt;a href=&quot;https://www.iana.org/domains/example&quot;>More information...&lt;/a>',
+    //     innerHTML: 'More information...',
+    //     parentElement: 'p'
+    //   }
+    // ]
+    let links = pHtml.links(0);
+    console.log(links);
+
+    // prints to console: https://www.iana.org/domains/example
+    let href = links[0].href;
+    console.log(href);
+
+    // From the wikipedia link, return the third table.
+    // This will return the array of arrays listed below:
+    // [
+    //     [
+    //         'Rank',
+    //         'Country',
+    //         'Driver',
+    //         'Wins',
+    //         'Seasons active',
+    //         'First win',
+    //         'Last win'
+    //     ],
+    //     [
+    //         '1',
+    //         'United Kingdom',
+    //         'Lewis Hamilton†',
+    //         '105',
+    //         '2007–',
+    //         '2007 Canadian Grand Prix',
+    //         '2024 Belgian Grand Prix'
+    //     ],
+    //     [
+    //         '2',
+    //         'Germany',
+    //         'Michael Schumacher‡',
+    //         '91',
+    //         '1991–2006, 2010–2012',
+    //         '1992 Belgian Grand Prix',
+    //         '2006 Chinese Grand Prix'
+    //     ],
+    //     [
+    //         '3',
+    //         'Netherlands',
+    //         'Max Verstappen†',
+    //         '63',
+    //         '2015–',
+    //         '2016 Spanish Grand Prix',
+    //         '2024 Qatar Grand Prix'
+    //     ],
+    //     ...
+    // ]
+    let tables = pHtml.tables(1)[2];
+    console.log(tables);
+})();
+</code></pre>
+<h3>Passing a Referer:</h3>
+<p>In some cases it may be beneficial to pass a referer to the get method. This can be handled as follows:</p>
+<pre class="prettyprint source lang-javascript"><code>await pHtml.get('https://en.wikipedia.org/wiki/List_of_Formula_One_Grand_Prix_winners', 'https://en.wikipedia.org/');
+
+</code></pre>
+<h2>Handling Page Reroutes and Reloads</h2>
+<p>If you are interacting with the page to perform more browser automation beyond the scope of this API, you may find it advantagous to load the page, interact with it, and then grab the DOM of the page in its final state. This could be accomplished as follows:</p>
+<pre class="prettyprint source lang-javascript"><code>// Create the PageHTML object.
+let pHtml = new PageHTML();
+
+// load a webpage
+await pHtml.get('https://bot-detector.rebrowser.net/');
+
+// perform browser and page interactions using pHtml.browser and pHtml.page which exposes the puppeteer class.
+
+// grab the latest dom after page interactions are complete by calling the get method with no arguments.
+await pHtml.get();
+
 </code></pre>
 <h2>License</h2>
 <p>MIT</p>
 <h2>Authors</h2>
-<p>John Glauber</p></article>
+<p>John Glauber</p>
+<h2>Contact</h2>
+<p>For any questions, comments, or suggestions please reach out via email to:</p>
+<p>johnbglauber@gmail.com
+https://github.com/jglauber/htmlScraper</p></article>
     </section>
 
 
@@ -76,13 +163,13 @@ let links = pHtml.links()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-htmlScraper.html">htmlScraper</a></li></ul><h3>Classes</h3><ul><li><a href="PageHTML.html">PageHTML</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getElementText">getElementText</a></li><li><a href="global.html#getLinks">getLinks</a></li><li><a href="global.html#makeTable">makeTable</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="PageHTML.html">PageHTML</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getElementText">getElementText</a></li><li><a href="global.html#getLinks">getLinks</a></li><li><a href="global.html#makeTable">makeTable</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Feb 04 2025 22:23:22 GMT-0800 (Pacific Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Feb 05 2025 13:52:53 GMT-0800 (Pacific Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
