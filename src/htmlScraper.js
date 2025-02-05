@@ -199,7 +199,7 @@ class PageHTML {
 
     /**
      * A method that returns a content object containing the text content
-     * and other relevant parameters for 
+     * and other relevant parameters for an HTML element.
      * @param {number|number[]} index The index of the dom property to perform this method on.
      * This may be a single number or an array of numbers. If left undefined it will apply to all indexes.
      * @param {string} elementString 
