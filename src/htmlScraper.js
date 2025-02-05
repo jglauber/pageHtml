@@ -7,9 +7,7 @@ const makeTable = require('../utils/makeTable');
 const getLinks = require('../utils/getLinks');
 const getElementText = require('../utils/getElement');
 
-/**
- * 
- */
+/** A class representing HTML pages. */
 class PageHTML {
     constructor() {
         this.dom = [];
@@ -22,6 +20,10 @@ class PageHTML {
         this.browser = null;
     };
 
+    /**
+     * A private method to generate the browser and page instances.
+     * @returns {{browser, page}} browser and page object, elements of Puppeteer class.
+     */
     async #createPage() {
         if (this.browser === null || this.page === null) {
             const browser = await puppeteer.launch({headless: false, defaultViewport: {width: this.screenWidth, height: this.screenHeight},
@@ -59,11 +61,19 @@ class PageHTML {
         return this.dom;
     }
 
+    /**
+     * A method to clear the array of the dom property of the class.
+     * @returns {null}
+     */
     clear() {
         this.dom.length = 0;
         return null;
     }
 
+    /**
+     * A method to return all tables present in an instance of the JSDOM class.
+     * @returns {string[]} tables: an array of arrays representing rows and columns of an html table.
+     */
     tables() {
         var tables = [];
         for (let dom of this.dom) {
@@ -72,6 +82,14 @@ class PageHTML {
         return tables;
     }
 
+    /**
+     * A method that returns a links object containing relevant information to any href elements in the instance of a JSDOM class.
+     * @returns {Array.<{href: string,
+     * nodeName: string,
+     * outerHTML: string,
+     * innerHTML: string,
+     * parentElement: string}>}
+     */
     links() {
         var links = [];
         for (let dom of this.dom) {
@@ -80,6 +98,15 @@ class PageHTML {
         return links;
     }
 
+    /**
+     * 
+     * @param {string} elementString 
+     * @returns {Array.<{elementText: string,
+     * nodeName: string,
+     * outerHTML: string,
+     * innerHTML: string,
+     * parentElement: string}>}
+     */
     content(elementString) {
         var content = [];
         for (let dom of this.dom) {
@@ -88,6 +115,9 @@ class PageHTML {
         return content; 
     }
 
+    /**
+     * Closes the browser instance of Puppeteer and sets the page and browser properties of the PageHTML class to null.
+     */
     close() {
         this.browser.close();
         this.page = null;

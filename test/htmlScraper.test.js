@@ -1,5 +1,12 @@
+const { PuppeteerNode } = require('rebrowser-puppeteer');
 const PageHTML = require('../src/htmlScraper');
 
+/**
+ * Passes the rebrowser automation tests to an instance of PageHTML. For more information on
+ * rebrowser tests, please visit: https://bot-detector.rebrowser.net/.
+ * @param {PuppeteerNode} page A puppeteer page instance created using puppeteer.launch()
+ * Function does not return anything.
+ */
 async function rebrowserPageTests(page) {
     
     // dummyFn - must be called in the main context
@@ -15,6 +22,10 @@ async function rebrowserPageTests(page) {
     await page.mainFrame().isolatedRealm().evaluate(() => document.getElementsByClassName('div'));
 }
 
+/**
+ * Runs the rebrowser main tests.
+ * @returns {boolean} Returns true if all tests pass or false if any one test fails.
+ */
 async function rebrowserMainTest() {
     let pHtml = new PageHTML();
     await pHtml.get('https://bot-detector.rebrowser.net/');
@@ -69,12 +80,15 @@ async function rebrowserMainTest() {
     }
 }
 
+/**
+ * Confirms user agent matches target.
+ * @returns {boolean} Returns true if user agent detected matches user agent provided by Puppeteer.
+ */
 async function checkUserAgent() {
     let pHtml = new PageHTML();
     await pHtml.get('https://www.whatsmyua.info/');
     let userAgentDetected = pHtml.content('li#rawUa')[0];
     userAgentDetected = userAgentDetected[0].elementText.replace('rawUa: ', '')
-    console.log(userAgentDetected);
     pHtml.close();
     if (userAgentDetected === pHtml.userAgent) {
         return true;  
@@ -83,6 +97,10 @@ async function checkUserAgent() {
     }
 }
 
+/**
+ * Confirm links are returned properly.
+ * @returns {boolean} Returns true if returned link matches expected link.
+ */
 async function checkLinks() {
     let pHtml = new PageHTML();
     await pHtml.get('https://www.example.com/');
@@ -95,6 +113,10 @@ async function checkLinks() {
     }
 }
 
+/**
+ * Confirm tables are retrieved properly.
+ * @returns {boolean} Returns true if tables are returned properly.
+ */
 async function tableTest() {
     let pHtml = new PageHTML();
     await pHtml.get('https://en.wikipedia.org/wiki/List_of_Formula_One_Grand_Prix_winners','https://en.wikipedia.org/');
@@ -107,21 +129,25 @@ async function tableTest() {
     }
 }
 
+// Jest test for user agent.
 test('User Agent Matches Expected Value', async () => {
     const result = await checkUserAgent();
     expect(result).toBe(true);
   }, 30000);
 
+// Jest test for rebrowser patches.
 test('Perform Rebrowser Patch Checks', async () => {
     const result = await rebrowserMainTest();
     expect(result).toBe(true);
   }, 30000);
 
+// Jest test for links.
 test('Confirm Links Retrieval', async () => {
     const result = await checkLinks();
     expect(result).toBe(true);
 }, 30000)
 
+// Jest test for tables.
 test('Tables Retrieved Successfully', async () => {
     const result = await tableTest();
     expect(result).toBe(true);

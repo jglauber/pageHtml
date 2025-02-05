@@ -3,7 +3,12 @@
  * the text content of that element.
  * @param {jsdom.JSDOM} dom The document object model, an instance of the JSDOM class.
  * @param {string} elementString The HTML element to query.
- * @returns 
+ * @returns {Array.<{elementText: string,
+ * nodeName: string,
+ * outerHTML: string,
+ * innerHTML: string,
+ * parentElement: string}>}
+ * elementText: an array of objects containing relevant element information.
  * 
  * @example
  * ```javascript

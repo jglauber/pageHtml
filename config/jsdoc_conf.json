@@ -1,0 +1,12 @@
+{
+    "source": {
+        "include": ["./src", "./utils"],
+        "exclude": [],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "plugins": [
+        "plugins/markdown",
+        "plugins/summarize"
+    ]
+}

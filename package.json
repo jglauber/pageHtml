@@ -37,6 +37,7 @@
     "user-agents": "^1.1.431"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "jsdoc": "^4.0.4"
   }
 }
